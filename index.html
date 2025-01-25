@@ -2,70 +2,38 @@
 <!doctype html>
 <html>
     <head>
-        <title>Test Tone</title>
+        <title>Binaural</title>
     </head>
     <body>
         <center>
-        <h1>Test Tone</h1>
+        <h1>Binaural</h1>
     	<p>
-    	1 kHz test tone<br>
+    	438/442 A<br>
     	<button onclick="onoff()">On/Off</button>
     	</p>
     	</center>
         
         <script>
-        	// Use a button to turn an oscillator on or off.
-        	// The button will call an "onoff()" function that we create.
-
-        	// Store the on/off state in a global boolean variable,
-        	// so that the "onoff()" function (defined below) can reference it.
-        	// Start with the oscillator turned off.
         	var isOn = false;
-        	
-        	// Set up the AudioContext so that it's ready to play the tone.        	
-            // Create the audio context.
-            // Take into account both non-webkit and webkit browsers.
-            var myAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+         var myAudioContext = new (window.AudioContext || window.webkitAudioContext)();
             
-            // This global variable will point to an "OscillatorNode".
-            // It will be assigned to an OscillatorNode each time one is needed,
-            // by means of the "createTestTone()" method. (See below.)
-            var myOscillator;
-            
-            // Create an oscillator, set its frequency, and connect it to the DAC.
-            // (See the definition of the "createTestTone() method below.)
-            createTestTone();        
+         var myOscillator;
+         createTestTone();        
     		
-    		// This method is to handle the recurring task of having to
-    		// create, set up, and connect a new oscillator
-    		// each time we want to play it.
-    		function createTestTone() {
-    			// Create a sound-generating oscillator in the AudioContext.
-            	myOscillator = myAudioContext.createOscillator();
-            	// By default, the frequency of a new oscillator is 440 Hz.
-            	// Change its frequency to 1000 Hz by setting the 
-            	// "value" property of the oscillator's "frequency" property.
-            	myOscillator.frequency.value = 1000;           
-            	// Connect the output of the oscillator to the output of the computer.
-            	myOscillator.connect(myAudioContext.destination);
+    		   function createTestTone() {
+    			     	myOscillator = myAudioContext.createOscillator();
+             myOscillator.frequency.value = 438;           
+   myOscillator.connect(myAudioContext.destination);
             }
 			 
-			// This method is called each time the user clicks on
-			// the "On/Off" button in the page.
-			// This function will manage the state of the global "isOn" boolean,
-			// and will manage the on/off state of the oscillator.
+			
 			function onoff() {
-				// Check the current on/off status in the "isOn" global.
 				if (isOn) {
-					// If it's on, switch it to off and stop the oscillator.
 					isOn = false;
 					myOscillator.stop(myAudioContext.currentTime);
-					// Once an oscillator has been turned off (stopped),
-					// it no longer exists. So you must create a new one.
 					createTestTone();
 				}
 				else {
-					// If it's off, switch it to on and start the oscillator.
 					isOn = true;
 					myOscillator.start(myAudioContext.currentTime);
 				}				
