@@ -14,30 +14,33 @@
     	</center>
         
         <script>
-        	var isOn = false;
-         var myAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+		var isOn = false;
+         	var myAudioContext = new (window.AudioContext || window.webkitAudioContext)();
             
-         var myOscillator;
-         createTestTone();        
+	        var myOscillator;
+		var panNode;
+         	createTestTone();        
     		
-    		   function createTestTone() {
-    			     	myOscillator = myAudioContext.createOscillator();
-             myOscillator.frequency.value = 438;           
-   myOscillator.connect(myAudioContext.destination);
-            }
+    		function createTestTone() {
+    			myOscillator = myAudioContext.createOscillator();
+			panNode = myAudioContext.createStereoPanner();			
+             		myOscillator.frequency.value = 438;
+			panNode.pan.value = -1;
+   			myOscillator.connect(panNode);
+			panNode.connect(myAudioContext.destination);
+		}
 			 
 			
-			function onoff() {
-				if (isOn) {
-					isOn = false;
-					myOscillator.stop(myAudioContext.currentTime);
-					createTestTone();
-				}
-				else {
-					isOn = true;
-					myOscillator.start(myAudioContext.currentTime);
-				}				
-			 }
+		function onoff() {
+			if (isOn) {
+				isOn = false;
+				myOscillator.stop(myAudioContext.currentTime);
+				createTestTone();
+			} else {
+				isOn = true;
+				myOscillator.start(myAudioContext.currentTime);
+			}				
+		}
         </script>
         
     </body>
