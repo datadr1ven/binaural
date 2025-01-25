@@ -6,18 +6,50 @@
 <p>one...</p>
 <script>
 
-// create web audio api context
-const audioCtx = new AudioContext();
+        	// You can think of it as a flow chart for a digital audio signal.
+        	// An "AudioContext" is an interface for creating such a signal path.
+        	// Within the AudioContext you create a network of interconnected
+        	// "AudioNodes", each of which performs some task with the audio,
+        	// such as generate audio, play existing audio, alter audio, etc.
+        	// You need an AudioContext in order to do anything with Web Audio.
+        	
+            // Create the audio context.
+            // Create a variable and assign a new AudioContext to it.
+            var myAudioContext = new AudioContext();
+            
+    		// Create a sound-generating oscillator in that context.
+    		// An AudioContext has a "createOscillator()" method to do that.
+    		// Create a variable and assign a newly created oscillator to it.
+            var myOscillator = myAudioContext.createOscillator();
+            // By default, the frequency of a new oscillator is 440 Hz.
+            // And by default its amplitude is 1.
+            
+            // Connect the output of the oscillator to the output of the computer.
+            // AudioContext has a "destination" property,
+            // which points to the computer's DAC (i.e., the audio output).
+            // And any audio source, such as an oscillator, has a
+            // "connect()" method to connect its output to something else.
+			myOscillator.connect(myAudioContext.destination);
+			 
+			// Start playing the oscillator immediately when the page loads.
+			// An oscillator has a "start()" method to start playing.
+			// The argument to start() is the starting time.
+			// An AudioContext keeps track of the current time in
+			// a property called "currentTime".
+			// If the specified start() time is less than or equal to
+			// the currentTime of the AudioContext, the event will start.
+			// So to make something happen immediately, you can either say
+			// "start(0)", which is guaranteed to be less than or equal to
+			// the currentTime, or you can start at the currentTime.
+			// If you provide no start time, it will be 0 by default.
+			// Start the carrier oscillator now.
+			myOscillator.start(myAudioContext.currentTime);
+			// That's it. The oscillator will start when the page is loaded,
+			// and since there's nothing to stop it, it will continue to play
+			// until the page is left or the window is closed. 
 
-// create Oscillator node
-const oscillator = audioCtx.createOscillator();
-
-oscillator.type = "square";
-oscillator.frequency.setValueAtTime(3000, audioCtx.currentTime); // value in hertz
-oscillator.connect(audioCtx.destination);
-oscillator.start();
 
 </script>
-<p>two...</p>
+<p>two...drop</p>
 </body>
 </html>
