@@ -1,54 +1,75 @@
+
 <!doctype html>
 <html>
     <head>
-        <title>Web Audio API - Play a Tone</title>
+        <title>Test Tone</title>
     </head>
     <body>
-        <h1>Welcome to the Web Audio API</h1>
+        <center>
+        <h1>Test Tone</h1>
+    	<p>
+    	1 kHz test tone<br>
+    	<button onclick="onoff()">On/Off</button>
+    	</p>
+    	</center>
         
         <script>
-        	// In Web Audio you define a digital audio signal path.
-        	// You can think of it as a flow chart for a digital audio signal.
-        	// An "AudioContext" is an interface for creating such a signal path.
-        	// Within the AudioContext you create a network of interconnected
-        	// "AudioNodes", each of which performs some task with the audio,
-        	// such as generate audio, play existing audio, alter audio, etc.
-        	// You need an AudioContext in order to do anything with Web Audio.
+        	// Use a button to turn an oscillator on or off.
+        	// The button will call an "onoff()" function that we create.
+
+        	// Store the on/off state in a global boolean variable,
+        	// so that the "onoff()" function (defined below) can reference it.
+        	// Start with the oscillator turned off.
+        	var isOn = false;
         	
+        	// Set up the AudioContext so that it's ready to play the tone.        	
             // Create the audio context.
-            // Create a variable and assign a new AudioContext to it.
-            var myAudioContext = new AudioContext();
+            // Take into account both non-webkit and webkit browsers.
+            var myAudioContext = new (window.AudioContext || window.webkitAudioContext)();
             
-    		// Create a sound-generating oscillator in that context.
-    		// An AudioContext has a "createOscillator()" method to do that.
-    		// Create a variable and assign a newly created oscillator to it.
-            var myOscillator = myAudioContext.createOscillator();
-            // By default, the frequency of a new oscillator is 440 Hz.
-            // And by default its amplitude is 1.
+            // This global variable will point to an "OscillatorNode".
+            // It will be assigned to an OscillatorNode each time one is needed,
+            // by means of the "createTestTone()" method. (See below.)
+            var myOscillator;
             
-            // Connect the output of the oscillator to the output of the computer.
-            // AudioContext has a "destination" property,
-            // which points to the computer's DAC (i.e., the audio output).
-            // And any audio source, such as an oscillator, has a
-            // "connect()" method to connect its output to something else.
-			myOscillator.connect(myAudioContext.destination);
+            // Create an oscillator, set its frequency, and connect it to the DAC.
+            // (See the definition of the "createTestTone() method below.)
+            createTestTone();        
+    		
+    		// This method is to handle the recurring task of having to
+    		// create, set up, and connect a new oscillator
+    		// each time we want to play it.
+    		function createTestTone() {
+    			// Create a sound-generating oscillator in the AudioContext.
+            	myOscillator = myAudioContext.createOscillator();
+            	// By default, the frequency of a new oscillator is 440 Hz.
+            	// Change its frequency to 1000 Hz by setting the 
+            	// "value" property of the oscillator's "frequency" property.
+            	myOscillator.frequency.value = 1000;           
+            	// Connect the output of the oscillator to the output of the computer.
+            	myOscillator.connect(myAudioContext.destination);
+            }
 			 
-			// Start playing the oscillator immediately when the page loads.
-			// An oscillator has a "start()" method to start playing.
-			// The argument to start() is the starting time.
-			// An AudioContext keeps track of the current time in
-			// a property called "currentTime".
-			// If the specified start() time is less than or equal to
-			// the currentTime of the AudioContext, the event will start.
-			// So to make something happen immediately, you can either say
-			// "start(0)", which is guaranteed to be less than or equal to
-			// the currentTime, or you can start at the currentTime.
-			// If you provide no start time, it will be 0 by default.
-			// Start the carrier oscillator now.
-			myOscillator.start(myAudioContext.currentTime);
-			// That's it. The oscillator will start when the page is loaded,
-			// and since there's nothing to stop it, it will continue to play
-			// until the page is left or the window is closed. 
+			// This method is called each time the user clicks on
+			// the "On/Off" button in the page.
+			// This function will manage the state of the global "isOn" boolean,
+			// and will manage the on/off state of the oscillator.
+			function onoff() {
+				// Check the current on/off status in the "isOn" global.
+				if (isOn) {
+					// If it's on, switch it to off and stop the oscillator.
+					isOn = false;
+					myOscillator.stop(myAudioContext.currentTime);
+					// Once an oscillator has been turned off (stopped),
+					// it no longer exists. So you must create a new one.
+					createTestTone();
+				}
+				else {
+					// If it's off, switch it to on and start the oscillator.
+					isOn = true;
+					myOscillator.start(myAudioContext.currentTime);
+				}				
+			 }
         </script>
         
     </body>
