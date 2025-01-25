@@ -34,7 +34,7 @@
     			myOscillatorL = myAudioContext.createOscillator();
 			panNodeL = myAudioContext.createStereoPanner();			
              		myOscillatorL.frequency.value = 442;
-			panNodeL.pan.value = -1;
+			panNodeL.pan.value = 1;
    			myOscillatorL.connect(panNodeL);
 			panNodeL.connect(myAudioContext.destination);
 			
